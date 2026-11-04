@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        id: python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check changed files
+        id: scope
+        run: python3 tools/ci_support.py check-files
+
+      - name: Public automatic grading
+        id: grading
+        if: always() && steps.checkout.outcome == 'success' && steps.python.outcome == 'success'
+        env:
+          CXX: g++
+        run: python3 tools/check.py . --output scores --require-core
+
+      - name: Scores, commit granularity, and receipt
+        if: always() && steps.checkout.outcome == 'success' && steps.python.outcome == 'success'
+        env:
+          CI_GRADING_OUTCOME: ${{ steps.grading.outcome }}
+          CI_SCOPE_OUTCOME: ${{ steps.scope.outcome }}
+        run: python3 tools/ci_support.py summary --scores scores --output "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload public grading reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assessment-01-public-grading
+          path: scores/
+          if-no-files-found: warn
+          retention-days: 14

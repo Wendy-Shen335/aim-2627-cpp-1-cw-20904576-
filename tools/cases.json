@@ -1,0 +1,196 @@
+{
+  "lesson": 1,
+  "mode": "visible",
+  "tasks": [
+    {
+      "id": "q1",
+      "title": "定点遥测规范化",
+      "source": "A1_q1.cpp",
+      "points": 8,
+      "bonus": false,
+      "cases": [
+        {
+          "name": "q1-visible-01",
+          "visibility": "visible",
+          "code": "CHECK(ratio(2,3)==66);"
+        },
+        {
+          "name": "q1-visible-02",
+          "visibility": "visible",
+          "code": "CHECK(report(7,2,3,20)==\"ID=7;HP=66;BAT=20;STATE=WARNING\");"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "title": "设备标签维护",
+      "source": "A1_q2.cpp",
+      "points": 10,
+      "bonus": false,
+      "cases": [
+        {
+          "name": "q2-visible-01",
+          "visibility": "visible",
+          "code": "CHECK(edit_labels(\"cam,imu,radar\",{{\"imu\",\"gyro\"},{\"cam\",\"\"},{\"\",\"lidar\"}})==\"gyro,radar,lidar\");"
+        },
+        {
+          "name": "q2-visible-02",
+          "visibility": "visible",
+          "code": "CHECK(edit_labels(\"cam,cam2,cam\",{{\"cam\",\"camera\"},{\"cam\",\"\"}})==\"camera,cam2\");"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "title": "窗口异常检测",
+      "source": "A1_q3.cpp",
+      "points": 10,
+      "bonus": false,
+      "cases": [
+        {
+          "name": "q3-visible-01",
+          "visibility": "visible",
+          "code": "CHECK((alarms({1,2,3,4},2,4)==std::vector<int>{2,3}));"
+        },
+        {
+          "name": "q3-visible-02",
+          "visibility": "visible",
+          "code": "CHECK(alarms({},1,0).empty());"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "title": "严格命令事务",
+      "source": "A1_q4.cpp",
+      "points": 12,
+      "bonus": false,
+      "cases": [
+        {
+          "name": "q4-visible-01",
+          "visibility": "visible",
+          "code": "aim::q4::CommandResult r=execute({\"ADD 5\",\"SET 8 x\",\"RESET\",\"ADD -2\"}); CHECK(r.value==-2 && r.accepted==3 && r.rejected==1);"
+        },
+        {
+          "name": "q4-visible-02",
+          "visibility": "visible",
+          "code": "aim::q4::CommandResult r=execute({}); CHECK(r.value==0 && r.accepted==0 && r.rejected==0);"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "title": "网格邻域风险图",
+      "source": "A1_q5.cpp",
+      "points": 12,
+      "bonus": false,
+      "cases": [
+        {
+          "name": "q5-visible-01",
+          "visibility": "visible",
+          "code": "CHECK((risk({\".#\",\"..\"})==std::vector<std::vector<int>>{{1,-1},{0,1}}));"
+        },
+        {
+          "name": "q5-visible-02",
+          "visibility": "visible",
+          "code": "CHECK(risk({}).empty());"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "title": "目标优先级选择",
+      "source": "A1_q6.cpp",
+      "points": 14,
+      "bonus": false,
+      "cases": [
+        {
+          "name": "q6-visible-01",
+          "visibility": "visible",
+          "code": "CHECK(select_target({{7,3,4,20,true},{2,0,5,20,true}},5)==2);"
+        },
+        {
+          "name": "q6-visible-02",
+          "visibility": "visible",
+          "code": "CHECK(select_target({},5)==-1);"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "title": "热量与弹仓仿真",
+      "source": "A1_q7.cpp",
+      "points": 16,
+      "bonus": false,
+      "cases": [
+        {
+          "name": "q7-visible-01",
+          "visibility": "visible",
+          "code": "aim::q7::FireResult r=simulate(2,90,10,20,{1,1,1}); CHECK(r.shots==2 && r.rejected==1 && r.ammo==0 && r.heat==100);"
+        },
+        {
+          "name": "q7-visible-02",
+          "visibility": "visible",
+          "code": "aim::q7::FireResult r=simulate(3,100,20,10,{0}); CHECK(r.heat==80 && r.rejected==0 && r.ammo==3);"
+        }
+      ]
+    },
+    {
+      "id": "q8",
+      "title": "遥测帧综合流水线",
+      "source": "A1_q8.cpp",
+      "points": 18,
+      "bonus": false,
+      "cases": [
+        {
+          "name": "q8-visible-01",
+          "visibility": "visible",
+          "code": "aim::q8::Summary r=summarize({{2,200},{1,-5},{2,10},{-1,30}}); CHECK(r.valid==2 && r.duplicate==1 && r.invalid==1 && r.total_hp==100 && (r.ids==std::vector<int>{1,2}));"
+        },
+        {
+          "name": "q8-visible-02",
+          "visibility": "visible",
+          "code": "aim::q8::Summary r=summarize({{1,-1001},{1,30},{1,1001}}); CHECK(r.valid==1 && r.duplicate==0 && r.invalid==2 && r.total_hp==30 && (r.ids==std::vector<int>{1}));"
+        }
+      ]
+    },
+    {
+      "id": "b1",
+      "title": "挑战：有符号十进制解析",
+      "source": "A1_b1.cpp",
+      "points": 10,
+      "bonus": true,
+      "cases": [
+        {
+          "name": "b1-visible-01",
+          "visibility": "visible",
+          "code": "int x=9; CHECK(parse_i32(\"-12\",x) && x==-12);"
+        },
+        {
+          "name": "b1-visible-02",
+          "visibility": "visible",
+          "code": "int x=9; CHECK(!parse_i32(\"12x\",x) && x==9);"
+        }
+      ]
+    },
+    {
+      "id": "b2",
+      "title": "挑战：原地稳定压缩",
+      "source": "A1_b2.cpp",
+      "points": 10,
+      "bonus": true,
+      "cases": [
+        {
+          "name": "b2-visible-01",
+          "visibility": "visible",
+          "code": "int a[] = {-1,2,0,9}; std::size_t n=compact(a,4,0,2); CHECK(n==2 && a[0]==2 && a[1]==0);"
+        },
+        {
+          "name": "b2-visible-02",
+          "visibility": "visible",
+          "code": "CHECK(compact(nullptr,0,0,1)==0);"
+        }
+      ]
+    }
+  ]
+}

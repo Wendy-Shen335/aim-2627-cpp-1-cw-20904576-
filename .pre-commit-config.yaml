@@ -1,0 +1,9 @@
+# Agent Session Commit / AgentLedger: archive AI sessions after a commit.
+# Run the repository-local installer documented in README before using this hook.
+minimum_pre_commit_version: '3.2.0'
+default_install_hook_types: [pre-commit, post-commit]
+repos:
+  - repo: https://github.com/Gentle-Lijie/AgentLedger
+    rev: v0.1.5
+    hooks:
+      - id: agent-session-commit

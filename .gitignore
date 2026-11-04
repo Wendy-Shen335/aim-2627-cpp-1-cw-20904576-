@@ -1,0 +1,8 @@
+build/
+scores/
+local_tests/build/
+*.exe
+.DS_Store
+.venv/
+.venv-agent-session-commit/
+.agent-sessions/source/
