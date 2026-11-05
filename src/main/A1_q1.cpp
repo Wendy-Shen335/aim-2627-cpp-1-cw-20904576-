@@ -18,8 +18,44 @@ namespace aim::q1 {
 
 
 // BEGIN IMPLEMENTATION
-long long ratio(long long hp, long long max_hp) { throw std::runtime_error("TODO"); }
-std::string report(int id, long long hp, long long max_hp, int battery) { throw std::runtime_error("TODO"); }
+// 获得HP的百分比
+long long ratio(long long hp, long long max_hp) { 
+    if ( max_hp <= 0 ) return -1;
+    if ( hp < 0 ) return 0;
+    if ( hp > max_hp ) return 100;
+    return (hp * 100) / max_hp;
+}
+// 生成报告
+std::string report(int id, long long hp, long long max_hp, int battery) { 
+    std::string text = "ID=" + std::to_string(id);
+    long long HP = ratio(hp,max_hp);
+    if (HP == -1) {
+        text += ";HP=INVALID";
+    } else {
+        text += ";HP=" + std::to_string(HP);
+    }
+    int BAT;
+    if (battery < 0){
+        BAT = 0;
+    }
+    else if (battery > 100){
+        BAT = 100;
+    }
+    else {
+        BAT = battery;
+    }
+    text += ";BAT=" + std::to_string(BAT);
+    if (BAT < 20){
+        text += ";STATE=LOW";
+    }
+    else if (BAT < 60){
+        text += ";STATE=WARNING";
+    }
+    else {
+        text += ";STATE=OK";
+    }
+    return text;
+ }
 // END IMPLEMENTATION
 }
 
