@@ -18,7 +18,53 @@ namespace aim::q2 {
 struct LabelEdit { std::string from; std::string to; };
 
 // BEGIN IMPLEMENTATION
-std::string edit_labels(std::string labels, const std::vector<LabelEdit>& edits) { throw std::runtime_error("TODO"); }
+std::string edit_labels(std::string labels, const std::vector<LabelEdit>& edits) { 
+    //字符串切分成列表
+    std::vector<std::string> label_list;
+    if (!labels.empty()){
+        std::string temp_label;
+        for (char temp_char : labels){
+            if (temp_char == ','){
+                label_list.push_back(temp_label);
+                temp_label.clear();
+            } else {
+                temp_label += temp_char;
+            }
+        }
+        label_list.push_back(temp_label);
+    }
+    //遍历edits进行修改
+    for (const LabelEdit& edit : edits){
+        if (edit.from.empty() && edit.to.empty()){
+            continue;
+        }
+        else if (edit.from.empty()){
+            label_list.push_back(edit.to);
+        }
+        else {
+            for (std::size_t i = 0; i < label_list.size(); ++i){
+                if (label_list[i] == edit.from){
+                    if (edit.to.empty()){
+                        label_list.erase(label_list.begin() + i);
+                    }
+                    else {
+                        label_list[i] = edit.to;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    //将列表重新拼接成字符串
+    std::string result;
+    for (std::size_t i = 0; i < label_list.size(); ++i){
+        result += label_list[i];
+        if (i != label_list.size() - 1){
+            result += ",";
+        }
+    }
+    return result;
+}
 // END IMPLEMENTATION
 }
 

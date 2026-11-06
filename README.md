@@ -141,6 +141,8 @@ END AI ASSISTANCE AUDIT NOTE -->
 
 按 Q1–Q8、B1/B2 记录：是否完成、核心思路、关键边界、时间/空间复杂度。给出至少三个新增边界测试的输入、预期和实际结果，再描述一处缺陷如何定位并修复。
 Q1：已完成
+Q2：已完成
+  核心思路：先把字符串切分成列表，方便遍历并进行修改，最后再把列表拼接成字符串。
 
 ## AI 使用与开发过程（你来写）
 
@@ -148,7 +150,32 @@ Q1：已完成
 
 使用AI工具“Workbuddy"。
 
-帮助范围：生成q1-8的教程，回答作业中牵扯到的关于知识点的问题,以及代码写完提交前的最后检查。
+帮助范围：生成q1-8的教程，回答作业中牵扯到的关于知识点的问题,代码写完提交前的最后检查，以及处理提交时产生的问题。
 说明：生成教程并不代表我全部按照他的教程来，教程用于帮助我学习补充自己不知道的知识点，并提供给我一个大致的框架。
 
 如何验证结果：一般会在提交前让他帮我测试一遍，以及提交后CI的反馈也是验证结果的一个途径。
+
+会话归档位置与复核方式：
+
+归档工具为 Agent Session Commit 0.1.5，.pre-commit-config.yaml 保持模板原样未修改。
+
+本机 WorkBuddy 的自动收集不可用，原因已定位：0.1.5 的 WorkBuddy 适配器要求会话 .jsonl
+的首行带有顶层 cwd 字段，而 WorkBuddy 的首两行是 session-meta（不含 cwd），cwd 从第 3 行
+消息记录才出现，因此 13 个候选会话全部被判为 unverifiable，status 显示
+Project session files found: 0。
+
+按课程说明"未支持的 IDE 应按工具支持的格式导出实际会话并选择 Custom 来源"，改用 custom 来源：
+
+- 导出脚本：export_workbuddy_session.py（仓库外，不提交）；它只导出 cwd 与本仓库根
+  完全一致的会话，生成带 YAML frontmatter 的 .md。
+- 原始导出目录：.agent-sessions/source/（已被 .gitignore 忽略，不进入公开仓库）。
+- 归档产物：.agent-sessions/bundles/，随提交入库。
+
+复核命令：
+
+git show --stat 86dc506 -- .agent-sessions/
+git log --oneline -5
+
+应能看到 .agent-sessions/bundles/20261105T133158Z-1996-1793885518715585000.tar.gz
+位于提交 86dc506 中（该提交为验证钩子而创建的空提交，SHA 因 amend 归档而从
+722e7d0 变为 86dc506）。
