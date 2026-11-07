@@ -18,7 +18,7 @@ namespace aim::q4 {
 struct CommandResult { long long value; int accepted; int rejected; };
 
 // BEGIN IMPLEMENTATION
-CommandResult execute(const std::vector<std::string>& lines) { throw std::runtime_error("TODO"); }
+CommandResult execute(const std::vector<std::string>& lines) {  }
 // END IMPLEMENTATION
 }
 

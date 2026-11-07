@@ -21,28 +21,21 @@ namespace aim::q3 {
 std::vector<int> alarms(const std::vector<int>& values, int k, long long threshold) {
     std::vector<int> result; 
     long long sum = 0;
-    long long win_num = 1;
-    std::vector<long long> temp;
+    int win_num = k - 1;
     if (k < 1 || k > static_cast<int>(values.size())){
         return result;
     } else{
-        for (int value :values){
-            if (temp.size() <k){
-                temp.push_back(value);
-                sum += value;
-            }
-            else{
-                if (sum > threshold){
-                    result.push_back(win_num);
-                    win_num++;
-                    sum -= temp[0];
-                    temp.erase(temp.begin());
-                }
-                else{
-                    win_num++;
-                    sum -= temp[0];
-                    temp.erase(temp.begin());
-                }
+        for (int i = 0; i < k; i++){
+            sum += values[static_cast<std::size_t>(i)];
+        }
+        if (sum > threshold){
+            result.push_back(win_num);
+        }
+        for (int i = k; i < static_cast<int>(values.size()); i++){
+            sum += values[static_cast<std::size_t>(i)] - values[static_cast<std::size_t>(i - k)];
+            win_num++;
+            if (sum > threshold){
+                result.push_back(win_num);
             }
         }
         return result;
