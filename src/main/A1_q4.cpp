@@ -18,7 +18,66 @@ namespace aim::q4 {
 struct CommandResult { long long value; int accepted; int rejected; };
 
 // BEGIN IMPLEMENTATION
-CommandResult execute(const std::vector<std::string>& lines) {  }
+CommandResult execute(const std::vector<std::string>& lines) { 
+    const long long LIMIT = 1000000;
+    long long value = 0;
+    int accepted = 0;
+    int rejected = 0;
+    for (const std::string& line : lines){
+        std::istringstream input(line);
+        std::string temp;
+        long long candidate = 0;
+        bool valid = false;
+        if (input >> temp){
+            if (temp == "ADD"){
+                long long x = 0;
+                std::string extra;
+                if ((input >> x) && (!(input >> extra)) && (x >= -LIMIT) && (x <= LIMIT)){
+                    candidate = value + x;
+                    valid = (candidate >= -LIMIT && candidate <= LIMIT);
+                    if (valid){
+                        value = candidate;
+                        accepted++;
+                    } else{
+                        rejected++;
+                    }
+                }else{
+                    rejected++;
+                }
+            }
+            else if (temp == "SET"){
+                long long x = 0;
+                std::string extra;
+                if ((input >> x) && (!(input >> extra)) && (x >= -LIMIT) && (x <= LIMIT)){
+                    candidate = x;
+                    valid = (candidate >= -LIMIT && candidate <= LIMIT);
+                    if (valid){
+                        value = candidate;
+                        accepted++;
+                    } else{
+                        rejected++;
+                    }
+                }else{
+                    rejected++;
+                }
+            }
+            else if (temp == "RESET"){
+                std::string extra;
+                if (!(input >> extra)){
+                    value = 0;
+                    accepted++;
+                } else{
+                    rejected++;
+                }
+            }else{
+                rejected++;
+            }
+        }else{
+            rejected++;
+        }
+    }
+    return {value, accepted, rejected};
+ }
 // END IMPLEMENTATION
 }
 
