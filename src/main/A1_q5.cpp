@@ -53,6 +53,7 @@ std::vector<std::vector<int>> risk(const std::vector<std::string>& grid) {
         result.push_back(std::move(line));
     }
     return result;
+}
 // END IMPLEMENTATION
 }
 
