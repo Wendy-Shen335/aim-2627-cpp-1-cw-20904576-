@@ -19,7 +19,33 @@ struct Telemetry { int id; int hp; };
 struct Summary { int valid; int duplicate; int invalid; long long total_hp; std::vector<int> ids; };
 
 // BEGIN IMPLEMENTATION
-Summary summarize(const std::vector<Telemetry>& frames) { throw std::runtime_error("TODO"); }
+Summary summarize(const std::vector<Telemetry>& frames) {
+    Summary out{0, 0, 0, 0, {}};
+    std::vector<bool> seen(10000, false);
+    for (const Telemetry& frame : frames) {
+        // 范围验证（非法记录不占编号）
+        if (frame.id < 0 || frame.id > 9999 ||
+            frame.hp < -1000 || frame.hp > 1000) {
+            out.invalid++;
+            continue;
+        }
+        // 查重
+        if (seen[static_cast<std::size_t>(frame.id)]) {
+            out.duplicate++;
+            continue;
+        }
+        // 首次合法：标记 + 统计 + 夹取 + 存编号
+        seen[static_cast<std::size_t>(frame.id)] = true;
+        out.valid++;
+        int hp = frame.hp;
+        if (hp < 0) hp = 0;
+        if (hp > 100) hp = 100;
+        out.total_hp += hp;
+        out.ids.push_back(frame.id);
+    }
+    std::sort(out.ids.begin(), out.ids.end());
+    return out;
+}
 // END IMPLEMENTATION
 }
 
